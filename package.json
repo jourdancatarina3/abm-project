@@ -1,0 +1,13 @@
+{
+  "name": "abm-project",
+  "version": "1.0.0",
+  "description": "**CMSC 176 (Agent-Based Modeling and Simulation) — Final Project, Team 8**",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

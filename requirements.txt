@@ -1,0 +1,10 @@
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.7
+seaborn>=0.12
+scipy>=1.10
+networkx>=3.0
+statsmodels>=0.14
+tqdm>=4.65
+streamlit>=1.30
+plotly>=5.18
