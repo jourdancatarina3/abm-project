@@ -230,31 +230,47 @@ def _sidebar() -> tuple[ModelConfig, dict]:
     st.sidebar.markdown("<div class='section-divider'></div>", unsafe_allow_html=True)
     st.sidebar.markdown("**Population and network**")
     n_users = st.sidebar.slider("Number of users", 100, 2000,
-                                 int(defaults.get("n_users", 500)), step=50)
+                                 int(defaults.get("n_users", 500)), step=50,
+                                 help="How many people are on the simulated platform.")
     network_kind_label = st.sidebar.radio(
         "Network topology",
         ["Barabasi-Albert (scale-free)",
          "Watts-Strogatz (small-world)",
          "Erdos-Renyi (random)"],
         index={"ba": 0, "ws": 1, "er": 2}[defaults.get("network_kind", "ba")],
+        help="How people are connected. Scale-free: a few big influencers and "
+             "many ordinary users (like real social media). Small-world: tight "
+             "friend clusters linked by a few long-distance shortcuts. "
+             "Random: everyone connected by pure chance, no hubs.",
     )
     network_kind = {"Barabasi-Albert (scale-free)": "ba",
                     "Watts-Strogatz (small-world)": "ws",
                     "Erdos-Renyi (random)": "er"}[network_kind_label]
     ba_m = st.sidebar.slider("BA: edges per new node (m)", 1, 10,
-                              int(defaults.get("ba_m", 3)))
+                              int(defaults.get("ba_m", 3)),
+                              help="For scale-free networks: how many people each "
+                                   "new user follows when joining. Higher = a denser, "
+                                   "more tightly connected network.")
     if network_kind == "ws":
         ws_k = st.sidebar.slider("WS: nearest neighbours (k)", 2, 12,
-                                  int(defaults.get("ws_k", 6)), step=2)
+                                  int(defaults.get("ws_k", 6)), step=2,
+                                  help="For small-world networks: how many neighbours "
+                                       "each person starts connected to (the size of "
+                                       "their immediate friend group).")
         ws_p = st.sidebar.slider("WS: rewiring probability", 0.0, 1.0,
-                                  float(defaults.get("ws_p", 0.1)), step=0.01)
+                                  float(defaults.get("ws_p", 0.1)), step=0.01,
+                                  help="For small-world networks: what fraction of local "
+                                       "links get swapped for random long-distance "
+                                       "shortcuts. Higher = more of a 'small world'.")
     else:
         ws_k = int(defaults.get("ws_k", 6))
         ws_p = float(defaults.get("ws_p", 0.1))
     if network_kind == "er":
         er_p = st.sidebar.slider("ER: edge probability", 0.001, 0.05,
                                   float(defaults.get("er_p", 0.006)),
-                                  step=0.001, format="%.3f")
+                                  step=0.001, format="%.3f",
+                                  help="For random networks: the chance that any two "
+                                       "people are connected. Higher = a denser network.")
     else:
         er_p = float(defaults.get("er_p", 0.006))
 
@@ -263,10 +279,14 @@ def _sidebar() -> tuple[ModelConfig, dict]:
     intrinsic_appeal = st.sidebar.slider(
         "Intrinsic appeal", 0.05, 1.0,
         float(defaults.get("intrinsic_appeal", 0.55)), step=0.05,
+        help="How naturally interesting or catchy the content is. Higher = people "
+             "engage with it easily on their own.",
     )
     novelty_half_life = st.sidebar.slider(
         "Novelty half-life (ticks)", 1, 480,
         int(defaults.get("novelty_half_life", 96)),
+        help="How fast the content gets 'old'. Short = it goes stale quickly; "
+             "long = it stays fresh and appealing for longer.",
     )
 
     st.sidebar.markdown("<div class='section-divider'></div>", unsafe_allow_html=True)
@@ -280,6 +300,8 @@ def _sidebar() -> tuple[ModelConfig, dict]:
         "Ambient discovery probability",
         0.0, 0.01, float(defaults.get("base_view_prob", 0.0008)),
         step=0.0002, format="%.4f",
+        help="The tiny chance a random person stumbles onto the content on their "
+             "own, with no sharing or algorithm involved (background luck).",
     )
 
     st.sidebar.markdown("<div class='section-divider'></div>", unsafe_allow_html=True)
@@ -292,31 +314,42 @@ def _sidebar() -> tuple[ModelConfig, dict]:
                                 int(AlgorithmState.NORMAL)) == int(AlgorithmState.PASSIVE)
               else 1,
         horizontal=True,
+        help="Whether the recommender starts switched off (Passive) or mildly "
+             "active (Normal) at the beginning of the simulation.",
     )
     boost_threshold = st.sidebar.slider(
         "Boost-trigger threshold (engagement rate)",
         0.0001, 0.1,
         float(defaults.get("boost_threshold", 0.015)), step=0.0005, format="%.4f",
+        help="How much buzz is needed before the algorithm decides 'this is "
+             "trending!' and starts pushing it hard. Lower = trips more easily.",
     )
     boost_inject_prob = st.sidebar.slider(
         "Boost-state injection probability",
         0.0, 0.5,
         float(defaults.get("boost_inject_prob", 0.05)), step=0.005, format="%.3f",
+        help="While boosting, how aggressively the algorithm shoves the content "
+             "into people's feeds. Higher = wider, faster reach.",
     )
     normal_inject_prob = st.sidebar.slider(
         "Normal-state injection probability",
         0.0, 0.05,
         float(defaults.get("normal_inject_prob", 0.002)), step=0.0005, format="%.4f",
+        help="The gentle everyday rate at which the algorithm shows the content "
+             "before any trending boost kicks in.",
     )
     boost_multiplier = st.sidebar.slider(
         "Boost appeal multiplier",
         0.0, 3.0,
         float(defaults.get("boost_multiplier", 1.0)), step=0.1,
+        help="How much more attractive the algorithm makes boosted content look. "
+             "Higher = stronger amplification of the trend.",
     )
     boost_duration_max = st.sidebar.slider(
         "Maximum boost duration (ticks)",
         6, 240,
         int(defaults.get("boost_duration_max", 72)),
+        help="How long the algorithm will keep boosting a trend before it stops.",
     )
     suppress_fatigue_ratio = st.sidebar.slider(
         "Suppression fatigue ratio",
@@ -329,7 +362,9 @@ def _sidebar() -> tuple[ModelConfig, dict]:
     st.sidebar.markdown("<div class='section-divider'></div>", unsafe_allow_html=True)
     st.sidebar.markdown("**Simulation horizon**")
     n_ticks = st.sidebar.slider("Total ticks", 60, 720,
-                                 int(defaults.get("n_ticks", 240)), step=20)
+                                 int(defaults.get("n_ticks", 240)), step=20,
+                                 help="How long the simulation runs. Each tick is one "
+                                      "step of time; more ticks = a longer story.")
     seed_strategy = st.sidebar.radio(
         "Seed origin",
         ["random", "hub"],
@@ -338,8 +373,13 @@ def _sidebar() -> tuple[ModelConfig, dict]:
         help="random: a random user starts the trend. hub: the highest-degree user does.",
     )
     n_seeds = st.sidebar.slider("Number of initial seeds", 1, 20,
-                                 int(defaults.get("n_seeds", 3)))
-    seed = st.sidebar.number_input("Random seed", 0, 99_999, 42, step=1)
+                                 int(defaults.get("n_seeds", 3)),
+                                 help="How many people kick off the trend at the very "
+                                      "start of the simulation.")
+    seed = st.sidebar.number_input("Random seed", 0, 99_999, 42, step=1,
+                                   help="A number that locks in the randomness. Reusing "
+                                        "the same seed with the same settings reproduces "
+                                        "the exact same run.")
 
     st.sidebar.markdown("<div class='section-divider'></div>", unsafe_allow_html=True)
     st.sidebar.markdown("**Visualisation**")
