@@ -901,6 +901,7 @@ def main():
         st.session_state["model"] = model
         st.session_state["layout"] = (xs, ys)
         st.session_state["running"] = False
+        st.rerun()
 
     # Slot layout
     slots = {}
