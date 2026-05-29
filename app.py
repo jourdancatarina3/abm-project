@@ -840,17 +840,17 @@ def _render(model: ViralityModel, settings: dict, slots: dict):
             col_left, col_right = st.columns(2)
             with col_left:
                 st.markdown(
-                    f"<h4 style='color:{COLOR_PRIMARY}; margin-top:0;'>"
-                    f"Current setup, in plain language</h4>",
+                    f"<div style='color:{COLOR_PRIMARY}; margin-top:0; "
+                    f"font-size:1.25rem; font-weight:600;'>"
+                    f"Current setup</div>",
                     unsafe_allow_html=True,
                 )
                 st.markdown(_interpret_setup(model.config))
             with col_right:
-                heading = ("What just happened" if snap["finished"]
-                           else "What is happening so far")
                 st.markdown(
-                    f"<h4 style='color:{COLOR_PRIMARY}; margin-top:0;'>"
-                    f"{heading}</h4>",
+                    f"<div style='color:{COLOR_PRIMARY}; margin-top:0; "
+                    f"font-size:1.25rem; font-weight:600;'>"
+                    f"Results interpretation</div>",
                     unsafe_allow_html=True,
                 )
                 st.markdown(_interpret_results(snap, model.config))
@@ -965,8 +965,9 @@ def main():
     # Summary and interpretation panel
     st.markdown("<div class='section-divider'></div>", unsafe_allow_html=True)
     st.markdown(
-        f"<h3 style='color:{COLOR_PRIMARY}; margin-bottom:0.1rem;'>"
-        f"Summary and interpretation</h3>"
+        f"<div style='color:{COLOR_PRIMARY}; margin-bottom:0.1rem; "
+        f"font-size:1.5rem; font-weight:700;'>"
+        f"Summary and interpretation</div>"
         f"<p style='color:{COLOR_MUTED}; margin-top:0; font-size:0.9rem;'>"
         f"A plain-language description of the current configuration and what "
         f"the simulation produced, intended for a non-technical audience."
@@ -990,15 +991,17 @@ def main():
             col_left, col_right = st.columns(2)
             with col_left:
                 st.markdown(
-                    f"<h4 style='color:{COLOR_PRIMARY}; margin-top:0;'>"
-                    f"Current setup, in plain language</h4>",
+                    f"<div style='color:{COLOR_PRIMARY}; margin-top:0; "
+                    f"font-size:1.25rem; font-weight:600;'>"
+                    f"Current setup</div>",
                     unsafe_allow_html=True,
                 )
                 st.markdown(_interpret_setup(cfg))
             with col_right:
                 st.markdown(
-                    f"<h4 style='color:{COLOR_PRIMARY}; margin-top:0;'>"
-                    f"What just happened</h4>",
+                    f"<div style='color:{COLOR_PRIMARY}; margin-top:0; "
+                    f"font-size:1.25rem; font-weight:600;'>"
+                    f"Results interpretation</div>",
                     unsafe_allow_html=True,
                 )
                 st.info("Click Setup, then Run, to generate a results summary.")
